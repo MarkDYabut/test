@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('fetchCredentialsButton')?.addEventListener('click', async () => {
-    const githubUrl = 'https://raw.githubusercontent.com/your-username/your-repo/main/credentials.json'; // Replace with your GitHub raw URL
+    const githubUrl = 'https://raw.githubusercontent.com/MarkDYabut/test/refs/heads/main/data.json'; // Replace with your GitHub raw URL
   
     try {
       const response = await fetch(githubUrl);
@@ -116,21 +116,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   
       const fetchedCredentials = await response.json();
-      localStorage.setItem('credentials', JSON.stringify(fetchedCredentials));
+      localStorage.setItem('remoteCredentials', JSON.stringify(fetchedCredentials));
   
-      // Update dropdown and stored credentials list
-      populateCredentialsDropdown();
-      displayStoredCredentials();
+      // Display fetched credentials in the Remote Credentials section
+      displayRemoteCredentials();
   
-      alert('Credentials fetched and updated successfully!');
+      alert('Remote credentials fetched and stored successfully!');
     } catch (error) {
-      console.error('Error fetching credentials:', error);
-      alert('Failed to fetch credentials. Please check the console for more details.');
+      console.error('Error fetching remote credentials:', error);
+      alert('Failed to fetch remote credentials. Please check the console for more details.');
     }
   });
 
   populateCredentialsDropdown();
   displayStoredCredentials();
+  displayRemoteCredentials();
 });
 
 function populateCredentialsDropdown() {
@@ -175,4 +175,16 @@ function deleteCredential(index) {
   localStorage.setItem('credentials', JSON.stringify(credentials));
   displayStoredCredentials();
   populateCredentialsDropdown();
+}
+
+function displayRemoteCredentials() {
+  const remoteCredentials = JSON.parse(localStorage.getItem('remoteCredentials')) || [];
+  const remoteCredentialsList = document.getElementById('remoteCredentialsList');
+  remoteCredentialsList.innerHTML = '';
+
+  remoteCredentials.forEach((cred) => {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `Username: ${cred.username}<br>Password: ${cred.password}`;
+    remoteCredentialsList.appendChild(listItem);
+  });
 }
