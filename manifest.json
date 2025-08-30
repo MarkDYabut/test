@@ -3,7 +3,7 @@
   "name": "Screenshot Extension",
   "version": "1.0",
   "description": "Take a screenshot of the current webpage and save it to the downloads folder.",
-  "permissions": ["activeTab", "downloads"],
+  "permissions": ["activeTab", "downloads", "scripting"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup.html",
