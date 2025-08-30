@@ -106,6 +106,29 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.tabs.update({ url: 'https://www.otpp.com/members/my/en/pages/signout' });
   });
 
+  document.getElementById('fetchCredentialsButton')?.addEventListener('click', async () => {
+    const githubUrl = 'https://raw.githubusercontent.com/your-username/your-repo/main/credentials.json'; // Replace with your GitHub raw URL
+  
+    try {
+      const response = await fetch(githubUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch credentials: ${response.statusText}`);
+      }
+  
+      const fetchedCredentials = await response.json();
+      localStorage.setItem('credentials', JSON.stringify(fetchedCredentials));
+  
+      // Update dropdown and stored credentials list
+      populateCredentialsDropdown();
+      displayStoredCredentials();
+  
+      alert('Credentials fetched and updated successfully!');
+    } catch (error) {
+      console.error('Error fetching credentials:', error);
+      alert('Failed to fetch credentials. Please check the console for more details.');
+    }
+  });
+
   populateCredentialsDropdown();
   displayStoredCredentials();
 });
