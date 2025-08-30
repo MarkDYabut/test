@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: (value1, value2) => {
+
           const field1 = document.evaluate("//input[@id='username']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
           const field2 = document.evaluate("//input[@id='password']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
           const submitButton = document.evaluate("//button[@type='submit']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -68,25 +69,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectedIndex > 0) { // Skip the placeholder option
       const { username, password } = credentials[selectedIndex - 1];
 
-      try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          func: (value1, value2) => {
-            const field1 = document.evaluate("//input[@id='username']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            const field2 = document.evaluate("//input[@id='password']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            const submitButton = document.evaluate("//button[@type='submit']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+      // Navigate to the authentication page in the current tab
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      chrome.tabs.update(tab.id, { url: 'https://www.otpp.com/auth/' });
 
-            if (field1) field1.value = value1;
-            if (field2) field2.value = value2;
-            if (submitButton) submitButton.click(); // Click the submit button
-          },
-          args: [username, password]
-        });
-      } catch (error) {
-        console.error('Error interacting with the page:', error);
-      }
+      // Wait for the tab to finish loading
+      chrome.tabs.onUpdated.addListener(function listener(tabId, changeInfo) {
+        if (tabId === tab.id && changeInfo.status === 'complete') {
+          chrome.tabs.onUpdated.removeListener(listener);
+
+          // Inject the script to fill in the username and password
+          chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: (value1, value2) => {
+              const field1 = document.evaluate("//input[@id='username']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+              const field2 = document.evaluate("//input[@id='password']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+              const submitButton = document.evaluate("//button[@type='submit']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+              if (field1) field1.value = value1;
+              if (field2) field2.value = value2;
+              if (submitButton) submitButton.click(); // Click the submit button
+            },
+            args: [username, password]
+          });
+        }
+      });
     }
+  });
+
+  document.getElementById('signoutButton').addEventListener('click', () => {
+    chrome.tabs.update({ url: 'https://www.otpp.com/members/my/en/pages/signout' });
   });
 
   populateCredentialsDropdown();
