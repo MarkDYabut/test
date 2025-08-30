@@ -13,22 +13,38 @@
       font-size: 16px;
       cursor: pointer;
     }
+    li {
+      list-style-type: none;
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    li button {
+      font-size: 12px;
+      padding: 2px 5px;
+      display: block;
+    }
+    ul {
+      padding-left: 0;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <h1>Screenshot Extension</h1>
+  <h1>Screenshot</h1>
   <button id="screenshotButton">Take Screenshot</button>
-
-  <h1>Add Credentials</h1>
-  <input type="text" id="newUsername" placeholder="Enter Username">
-  <input type="password" id="newPassword" placeholder="Enter Password">
-  <button id="addCredentialsButton">Add Credentials</button>
 
   <h1>Login</h1>
   <select id="credentialsDropdown">
     <option value="" disabled selected>Select Credentials</option>
   </select>
   <button id="loginButton">Login</button>
+
+  <h1>Add Credentials</h1>
+  <input type="text" id="newUsername" placeholder="Enter Username">
+  <input type="password" id="newPassword" placeholder="Enter Password">
+  <button id="addCredentialsButton">Add Credentials</button>
 
   <h2>Stored Credentials</h2>
   <ul id="credentialsList"></ul>

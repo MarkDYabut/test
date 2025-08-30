@@ -111,9 +111,28 @@ function displayStoredCredentials() {
   const credentialsList = document.getElementById('credentialsList');
   credentialsList.innerHTML = '';
 
-  credentials.forEach((cred) => {
+  credentials.forEach((cred, index) => {
     const listItem = document.createElement('li');
-    listItem.textContent = `Username: ${cred.username}, Password: ${cred.password}`;
+    listItem.innerHTML = `Username: ${cred.username}<br>Password: ${cred.password}`;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    // deleteButton.style.marginLeft = '10px';
+    deleteButton.addEventListener('click', () => {
+      if (confirm(`Are you sure you want to delete the credential for username: ${cred.username}?`)) {
+        deleteCredential(index);
+      }
+    });
+
+    listItem.appendChild(deleteButton);
     credentialsList.appendChild(listItem);
   });
+}
+
+function deleteCredential(index) {
+  const credentials = JSON.parse(localStorage.getItem('credentials')) || [];
+  credentials.splice(index, 1);
+  localStorage.setItem('credentials', JSON.stringify(credentials));
+  displayStoredCredentials();
+  populateCredentialsDropdown();
 }
