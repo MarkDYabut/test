@@ -19,13 +19,20 @@
   <h1>Screenshot Extension</h1>
   <button id="screenshotButton">Take Screenshot</button>
 
+  <h1>Add Credentials</h1>
+  <input type="text" id="newUsername" placeholder="Enter Username">
+  <input type="password" id="newPassword" placeholder="Enter Password">
+  <button id="addCredentialsButton">Add Credentials</button>
+
   <h1>Login</h1>
-  <input type="text" id="inputField" value="">
-  <input type="text" id="inputField2" value="">
-  <button id="inputButton">Login</button>
+  <select id="credentialsDropdown">
+    <option value="" disabled selected>Select Credentials</option>
+  </select>
+  <button id="loginButton">Login</button>
 
+  <h2>Stored Credentials</h2>
+  <ul id="credentialsList"></ul>
 
-  
   <script src="popup.js"></script>
 </body>
 </html>
