@@ -2,11 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('screenshotButton')?.addEventListener('click', async () => {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      chrome.tabs.captureVisibleTab(tab.windowId, { format: 'png' }, (dataUrl) => {
-        chrome.downloads.download({
-          url: dataUrl,
-          filename: 'screenshot.png'
-        });
+      chrome.tabs.captureVisibleTab(tab.windowId, { format: 'png' }, async (dataUrl) => {
+        try {
+          const response = await fetch(dataUrl);
+          const blob = await response.blob();
+          const clipboardItem = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([clipboardItem]);
+          alert('Screenshot copied to clipboard!');
+        } catch (clipboardError) {
+          console.error('Failed to copy screenshot to clipboard:', clipboardError);
+        }
       });
     } catch (error) {
       console.error('Error taking screenshot:', error);
